@@ -34,5 +34,16 @@ SELECT *
 FROM person
 WHERE person_id > 1000;
 
-4. 
+4. Inspect the execution plan for the following query:
+
+EXPLAIN ANALYZE
+SELECT *
+FROM person
+WHERE person_id = 34
+   OR person_id = 35
+   OR person_id = 36
+   OR person_id = 37
+   OR person_id = 38;
+
+Then rewrite the query using the IN keyword and inspect the new execution plan. What do you find?
 
