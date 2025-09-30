@@ -47,3 +47,25 @@ WHERE person_id = 34
 
 Then rewrite the query using the IN keyword and inspect the new execution plan. What do you find?
 
+Compare the results when you use the column with no index (person_id_no_idx).
+
+5. The visit_start_date column from the visit_occurrence table has an index on it. Let's say we want to find all rows whose start date in in January 2009. We might start by using the extract function as in the following query: 
+
+EXPLAIN ANALYZE
+SELECT *
+FROM visit_occurrence
+WHERE EXTRACT(YEAR FROM visit_start_date) = 2009 AND EXTRACT(MONTH FROM visit_start_date) = 1;
+
+Does this query use the index? Can you rewrite it so that the execution plan can take advantage of the index? 
+
+
+6. Now, compare what happens if we filter for all records in 2009. Try it using EXTRACT:
+
+EXPLAIN ANALYZE
+SELECT *
+FROM visit_occurrence
+WHERE EXTRACT(YEAR FROM visit_start_date) = 2009;
+
+Then rewrite the query to use the index. How much does the speedup compare to the previous question where you were filtering to just one month?
+
+7. 
