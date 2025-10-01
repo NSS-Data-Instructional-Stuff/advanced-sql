@@ -81,8 +81,66 @@ GROUP BY p.person_id;
 
 Look at the query plan for this query.
 
+In some cases, it helps to filter first using a CTE. We can try it here using 
 
-10. Usually, we want to avoid [correlated subqueries](https://www.geeksforgeeks.org/sql/sql-correlated-subqueries/) but there can be times when they actually run faster than an uncorrelated version.
+EXPLAIN ANALYZE
+WITH filtered_conditions AS (
+  SELECT *
+  FROM condition_occurrence
+  WHERE condition_concept_id = 201826
+)
+SELECT p.person_id, COUNT(fc.condition_concept_id)
+FROM person p
+LEFT JOIN filtered_conditions fc
+  ON p.person_id = fc.person_id
+GROUP BY p.person_id;
+
+Does it help in this case? Stretch goal: try and understand the difference in the query plans for these two versions.
+
+
+8. While you may not have gotten a speedup in this case, prefiltering can be helpful sometimes.
+
+Compare 
+
+EXPLAIN ANALYZE
+SELECT p.person_id, COUNT(condition_concept_id)
+FROM person p
+LEFT JOIN condition_occurrence c
+ON p.person_id = c.person_id
+WHERE c.condition_concept_id > 300000
+GROUP BY p.person_id;
+
+to 
+
+EXPLAIN ANALYZE
+WITH filtered_conditions AS (
+  SELECT *
+  FROM condition_occurrence
+  WHERE condition_concept_id > 300000
+)
+SELECT p.person_id, COUNT(fc.condition_concept_id)
+FROM person p
+LEFT JOIN filtered_conditions fc
+  ON p.person_id = fc.person_id
+GROUP BY p.person_id;
+
+Which is more efficient?
+
+
+9. We can also do a version using [correlated subqueries](https://www.geeksforgeeks.org/sql/sql-correlated-subqueries/). Inspect the query plan for the correlated version. How does it differ? Is it faster or slower than the uncorrelated one?
+
+EXPLAIN ANALYZE
+SELECT p.person_id,
+       (
+         SELECT COUNT(*)
+         FROM condition_occurrence c
+         WHERE c.person_id = p.person_id
+           AND c.condition_concept_id = 201826 
+       ) AS diabetes_condition_count
+FROM person p;	
+
+
+10. Usually, we want to avoid correlated subqueries since they require looping, a slow process, but there can be times when they actually run faster than an uncorrelated version.
 
 EXPLAIN ANALYZE
 SELECT p.person_id,
