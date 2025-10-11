@@ -72,6 +72,7 @@ Then rewrite the query to use the index. How much does the speedup compare to th
 
 One way we can do this is a simple join and aggregation:
 
+EXPLAIN ANALYZE
 SELECT p.person_id, COUNT(condition_concept_id)
 FROM person p
 LEFT JOIN condition_occurrence c
@@ -97,37 +98,7 @@ GROUP BY p.person_id;
 
 Does it help in this case? Stretch goal: try and understand the difference in the query plans for these two versions.
 
-
-8. While you may not have gotten a speedup in this case, prefiltering can be helpful sometimes.
-
-Compare 
-
-EXPLAIN ANALYZE
-SELECT p.person_id, COUNT(condition_concept_id)
-FROM person p
-LEFT JOIN condition_occurrence c
-ON p.person_id = c.person_id
-WHERE c.condition_concept_id > 300000
-GROUP BY p.person_id;
-
-to 
-
-EXPLAIN ANALYZE
-WITH filtered_conditions AS (
-  SELECT *
-  FROM condition_occurrence
-  WHERE condition_concept_id > 300000
-)
-SELECT p.person_id, COUNT(fc.condition_concept_id)
-FROM person p
-LEFT JOIN filtered_conditions fc
-  ON p.person_id = fc.person_id
-GROUP BY p.person_id;
-
-Which is more efficient?
-
-
-9. We can also do a version using [correlated subqueries](https://www.geeksforgeeks.org/sql/sql-correlated-subqueries/). Inspect the query plan for the correlated version. How does it differ? Is it faster or slower than the uncorrelated one?
+8. We can also do a version using [correlated subqueries](https://www.geeksforgeeks.org/sql/sql-correlated-subqueries/). Inspect the query plan for the correlated version. How does it differ? Is it faster or slower than the uncorrelated one?
 
 EXPLAIN ANALYZE
 SELECT p.person_id,
@@ -140,81 +111,30 @@ SELECT p.person_id,
 FROM person p;	
 
 
-10. Usually, we want to avoid correlated subqueries since they require looping, a slow process, but there can be times when they actually run faster than an uncorrelated version.
+9. While prefiltering may not have given a speedup in this case, prefiltering can be helpful sometimes.
+
+Compare 
 
 EXPLAIN ANALYZE
-SELECT p.person_id,
-       (
-         SELECT COUNT(*)
-         FROM condition_occurrence c
-         WHERE c.person_id = p.person_id
-           AND c.condition_concept_id = 201826 
-       ) AS diabetes_condition_count,
-       (
-         SELECT COUNT(*)
-         FROM drug_exposure d
-         WHERE d.person_id = p.person_id
-           AND d.drug_concept_id = 221344
-       ) AS vaccine_count
-FROM person p;
-
-First, if we want to convert the correlated subquery into joins, what is wrong with this query:
-
-SELECT 
-	p.person_id, 
-	COUNT(condition_concept_id) AS diabetes_count,
-	COUNT(drug_concept_id) AS vaccine_count
+SELECT p.person_id, COUNT(condition_concept_id)
 FROM person p
 LEFT JOIN condition_occurrence c
 ON p.person_id = c.person_id
-LEFT JOIN drug_exposure d
-ON p.person_id = d.person_id
-WHERE c.condition_concept_id = 201826 AND d.drug_concept_id = 2213440
+WHERE c.condition_concept_id > 200000
 GROUP BY p.person_id;
 
+to 
 
-Now, if instead of one main query, we could perform counts using CTEs.
-
-WITH condition_counts AS (
-    SELECT person_id, COUNT(*) AS diabetes_condition_count
-    FROM condition_occurrence
-    WHERE condition_concept_id = 201826
-      AND person_id IN (SELECT person_id FROM person)
-    GROUP BY person_id
-),
-drug_counts AS (
-    SELECT person_id, COUNT(*) AS vaccine_count
-    FROM drug_exposure
-    WHERE drug_concept_id = 2213440
-      AND person_id IN (SELECT person_id FROM person)
-    GROUP BY person_id
+EXPLAIN ANALYZE
+WITH filtered_conditions AS (
+  SELECT *
+  FROM condition_occurrence
+  WHERE condition_concept_id > 200000
 )
-SELECT p.person_id,
-       COALESCE(c.diabetes_condition_count, 0),
-       COALESCE(d.vaccine_count, 0)
+SELECT p.person_id, COUNT(fc.condition_concept_id)
 FROM person p
-LEFT JOIN condition_counts c USING (person_id)
-LEFT JOIN drug_counts d USING (person_id);
+LEFT JOIN filtered_conditions fc
+  ON p.person_id = fc.person_id
+GROUP BY p.person_id;
 
-You'll notice that this takes a lot longer to run. Inspect the query plan to see why. 
-
-More than likely, the planner is using a [Nested Loop Left Join](https://pganalyze.com/docs/explain/join-nodes/nested-loop), which is very inefficient. Unfortunaly, it thinks this will be the more efficient type of merge, but in this case will be very slow, and we're actually better off with a correlated subquery. 
-
-Note that part of the reason that the correlated version was so much faster was the indexes. Try running it with no index instead:
-
-SELECT p.person_id_no_idx,
-       (
-         SELECT COUNT(*)
-         FROM condition_occurrence c
-         WHERE c.person_id_no_idx = p.person_id_no_idx
-           AND c.condition_concept_id = 201826 
-       ) AS diabetes_condition_count,
-       (
-         SELECT COUNT(*)
-         FROM drug_exposure d
-         WHERE d.person_id_no_idx = p.person_id_no_idx
-           AND d.drug_concept_id = 221344
-       ) AS vaccine_count
-FROM person p;
-
-Does it work if one of the tables has an index?
+Which is more efficient?
