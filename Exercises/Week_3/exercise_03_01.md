@@ -5,7 +5,7 @@ a. Start by writing a query using the visit_occurrence table to find the total n
 b. Convert your query into both a standard view and a materialized view.
 c. Perform a select all from both views? Which is faster? 
 
-2. Create a function that takes as input a person_id and returns a table showing drug_concept_id and total quantity of each of the drugs for that patient from the drug_exposure table. Then use your function to find the total quantity by drugs for person_id 2431. Then 
+2. Create a function that takes as input a person_id and returns a table showing drug_concept_id and total quantity of each of the drugs for that patient from the drug_exposure table. Then use your function to find the total quantity by drugs for person_id 2431.
 
 3. Modify the function you created in the last part so that it also takes two additional inputs, a start and end date, and returns the totals for all drug exposures with a drug_exposure_start_date between the supplied dates. Note: if you want to overwrite a function, you can use CREATE OR REPLACE FUNCTION. Then use your function to find the total quantity by drug for person_id 2431 with a drug_exposure_start_date in 2009.
 

@@ -102,7 +102,7 @@ WHERE p2.year_of_birth IS NOT NULL;
 The following queries have some subtle mistakes. Can you spot them and correct the query?
 
 6. 
-The intended purpose of this query is to find all patients who were prescribed acetaminophen (drug_concept_id = 1125315) and for those patients show all conditions they have had since 2010.
+The intended purpose of this query is to find all patients who were prescribed oxygen (drug_concept_id = 19025280) and for those patients show all conditions they have had since 2010.
 
 SELECT p.person_id,
        d.drug_concept_id,
@@ -110,7 +110,7 @@ SELECT p.person_id,
 FROM person p
 JOIN drug_exposure d ON p.person_id = d.person_id
 JOIN condition_occurrence c ON p.person_id = c.person_id
-WHERE d.drug_concept_id = 1125315
+WHERE d.drug_concept_id = 19025280
   AND c.condition_start_date >= DATE '2010-01-01';
 
 7. 

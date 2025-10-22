@@ -1,6 +1,6 @@
 ## Week 2, Part 1: Exploring Execution Plans
 
-In this set of exerices, you'll compare the execution plans and efficiency of queries. 
+In this set of exercises, you'll compare the execution plans and efficiency of queries. 
 
 You may find [the Postgres documentation](https://www.postgresql.org/docs/current/using-explain.html) helpful in reading the outputs.
 
