@@ -1,6 +1,6 @@
 ## BigQuery String Functions and Views
 
-You'll use the new_york_trees dataset in BigQuery to complete these exercises. Use the 2015 census table unless otherwise directed.
+You'll use the new_york_trees dataset in BigQuery's public datasets to complete these exercises. Use the 2015 census table unless otherwise directed.
 
 1. Create a short, compound location ID. The format should be first 4 characters of tree_id + first 3 letters of boroname in uppercase. An example of expected format: 8054BRO for tree_id 80548 in boroname Bronx
 

@@ -2,7 +2,7 @@
 
 The goal of these exercises is to rewrite the given query to be more efficient. Bytes processed/billed and Slot milliseconds are prime indicators of efficiency in BigQuery.
 
-1. For conditions recorded in the year 2012, how many distinct patients received each condition? Show the condition concept ID and the patient count.
+1. For conditions recorded in the year 2010, how many distinct patients received each condition? Show the condition concept ID and the patient count.
 
 SELECT *,
   COUNT(DISTINCT person_id) AS patient_count
@@ -41,7 +41,7 @@ GROUP BY ALL;
 
 ---------------------------
 
-3. In the entire dataset, compare the number of times Diabetes (Concept ID: 201820) was recorded versus the number of times Hypertension (Concept ID: 320128) was recorded, grouped by the condition's source value text.
+3. In the entire dataset, compare the number of times Diabetes (Concept ID: 201820) was recorded versus the number of times Atrial Fibrillation (Concept ID: 313217) was recorded, grouped by the condition's source value text.
 
 SELECT t1.condition_source_value,
   COUNT(CASE WHEN t1.condition_concept_id = 201820 THEN 1 END) AS diabetes_count,
