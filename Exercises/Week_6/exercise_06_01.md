@@ -1,6 +1,6 @@
 ## Optimizing Inefficient Queries in BigQuery
 
-The goal of these exercises is to rewrite the given query to be more efficient. Bytes processed/billed and Slot milliseconds are prime indicators of efficiency in BigQuery.
+The goal of these exercises is to rewrite the given query to be more efficient. Bytes processed/billed and Slot milliseconds are prime indicators of efficiency in BigQuery. You will be using the CMS synthetic patient data for these exercises. Note the bytes processed and slot milliseconds consumed for the original un-optimized query from the job information section, and the same information for your optimized version.
 
 1. For conditions recorded in the year 2010, how many distinct patients received each condition? Show the condition concept ID and the patient count.
 
