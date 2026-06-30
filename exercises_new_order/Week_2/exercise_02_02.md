@@ -12,7 +12,7 @@ Find the most recent exposure for each unique combination of person_id and drug_
 ### Question 3
 Using the condition_occurrence table, produce a running total of how many distinct condition records each patient has accumulated over time ordered by person_id and condition_start_date.
 
-For each row, show the cumulative count of condition records up to and including that date using a running SUM window with RAWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW. Include person_id, condition_concept_id, condition_start_date, and running_condition_count.
+For each row, show the cumulative count of condition records up to and including that date using a running SUM window with ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW. Include person_id, condition_concept_id, condition_start_date, and running_condition_count.
 
 ### Question 4
 Find the top 3 most frequent conditions per gender. You'll want to join condition_occurrence with person to bring in gender_concept_id.
