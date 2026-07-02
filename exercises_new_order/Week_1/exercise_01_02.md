@@ -1,24 +1,17 @@
-## Week 1, Part 2 Introduction to BigQuery
+## Week 2, Part 1: Window Functions Practice
 
-This set of exercises is designed to get you oriented to using the BigQuery platform and the public datasets made available by Google.
+1. Using the drug_exposure table, find the first exposure to epoetin alfa (drug_concept_id = 1301125) for each patient. Return all columns from drug_exposure. If a patient has more than one record on their first exposure date, return only the record with the lowest drug_exposure_id. Use a window function in your query.
 
-Google has excellent documentation for BigQuery - you'll find an overview here and links to other sections of the documentation.
-https://cloud.google.com/bigquery/docs
+2. For each patient who received epoetin alfa on more than one day, find the second distinct date on which they received it. Again, return all columns from the drug_exposure table, and if a patient has more than one record on their second exposure date, return only the lowest drug_exposure_id. 
 
-The dataset is bigquery-public-data.cms_synthetic_patient_data_omop. Click "Add data", then "Public Datasets", then search for "synthetic patient data in omop". Click on the dataset, then click the "view dataset" button which will open it up in your BigQuery sandbox project.
+3. For each person, count their visits and rank them within their gender.
 
------------------------------------
-### Question 1
-Calculate the total number of distinct providers who performed a procedure on a patient who has a documented diagnosis of Type 2 Diabetes Mellitus (condition_concept_id = 201826). Hint: a patient's condition is recorded in the condition_occurrence table, and any procedures those patients have received are documented in the procedure_occurrence table.
+4. For each patient, calculate a running total of visits over time, ordered by visit_start_date.
 
-### Question 2
-List the unique person_id values and race_source_value of patients who had Type 2 Diabetes Mellitus (condition_concept_id = 201826) documented in at least three separate condition_occurrence records in the year 2009.
+5. Show each patient's total number of different conditions and the average number of conditions across all patients in the same gender.
 
-### Question 3
-Use a CTE to first calculate the average quantity of all drug exposures in the dataset. (This is a single value.) Then, use that average to count how many patients with Type 2 Diabetes Mellitus (condition_concept_id = 201826) received carbamazepine (drug_concept_id = 19074697) in a quantity greater than the overall average. (Hint: you can solve this with an intentional Cartesian join.)
+6. For each gender, count the number of visits in each care setting (visit_concept_id, which can be found in the visit_occurrence table). Compute what percentage of that gender's total visits each care setting represents. Return a table with 4 columns: gender_concept_id, visit_concept_id, visit_count, percent_of_gender_visits (percentage of that gender's total visits for that care setting).
 
-### Question 4
-Find the unique person IDs of patients who had a Type 2 Diabetes Mellitus diagnosis (condition_concept_id = 201826) in 2008 AND a documented drug exposure record in 2008, BUT who have NO documented procedure occurrence records (at any time).
+7. For each patient, identify inpatient or emergency visits that occur less than 30 days after the previous visit. These could indicate possible readmissions. Inpatient and emergency visits can be found using visit_concept_ids 9201 and 9203. 
 
-### Question 5
-For each patient, calculate the number of days between their current Type 2 Diabetes Mellitus (condition_concept_id = 201826) diagnosis date and the date of their previous T2DM diagnosis. (Hint: use condition_start_date in the condition_occurrence table.)
+8. Rank the top five providers based on the total count of procedures (procedure_occurrence_id) they documented. Which ranking function did you use, and why did you choose that one vs another choice?
