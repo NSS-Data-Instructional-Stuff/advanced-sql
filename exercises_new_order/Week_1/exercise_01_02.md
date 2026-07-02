@@ -1,4 +1,4 @@
-## Week 2, Part 1: Window Functions Practice
+## Week 1, Part 2: Window Functions Practice
 
 1. Using the drug_exposure table, find the first exposure to epoetin alfa (drug_concept_id = 1301125) for each patient. Return all columns from drug_exposure. If a patient has more than one record on their first exposure date, return only the record with the lowest drug_exposure_id. Use a window function in your query.
 

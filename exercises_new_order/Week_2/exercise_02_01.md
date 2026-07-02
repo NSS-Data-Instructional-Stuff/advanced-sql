@@ -1,4 +1,4 @@
-## Week 1, Part 2 Introduction to BigQuery
+## Week 2, Part 1 Introduction to BigQuery
 
 This set of exercises is designed to get you oriented to using the BigQuery platform and the public datasets made available by Google.
 
