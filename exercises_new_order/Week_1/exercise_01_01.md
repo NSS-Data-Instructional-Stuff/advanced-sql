@@ -12,6 +12,6 @@
 
 6. Using the visit_occurrence table, find all patients with a higher number of visits than the average for their gender. Hint: write one CTE to find the total number of visits per patient. Then write a second CTE to find the average per gender.
 
-7. For each patient, find the most recent visit.
+7. For each patient, find the most recent visit. Include the visit_occurrence_id in your final output.
 
 8. Find patients who had a drug exposure before their first recorded condition diagnosis. Condition diagnoses can be found in the condition_occurrence table.
